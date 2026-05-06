@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>文化传播人格测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f6f5f2;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans CJK SC', sans-serif;
+            padding: 1.5rem;
+            line-height: 1.4;
+            color: #1a1a1a;
+        }
+        .container {
+            max-width: 880px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.03), 0 0 0 1px #e8e5df;
+            overflow: hidden;
+        }
+        .header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid #efede8;
+        }
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 450;
+            letter-spacing: -0.2px;
+            color: #2c2a26;
+        }
+        .content {
+            padding: 2rem;
+        }
+        .entry {
+            text-align: center;
+            padding: 1rem 0 2rem;
+        }
+        .entry-desc {
+            max-width: 90%;
+            margin: 0 auto 2rem;
+            color: #4a4a46;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+        .entry-desc p {
+            margin: 0.8rem 0;
+        }
+        .start-btn {
+            background: #2c2a26;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 450;
+            transition: 0.2s;
+            margin-top: 0.5rem;
+        }
+        .start-btn:hover {
+            background: #4a4741;
+        }
+        .question-card {
+            margin-bottom: 2rem;
+        }
+        .q-title {
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+            line-height: 1.4;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            padding: 0.3rem 0;
+            font-size: 0.95rem;
+        }
+        .option-item input {
+            margin-top: 0.2rem;
+            accent-color: #2c2a26;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        .nav-btn {
+            background: none;
+            border: 1px solid #d4d0c4;
+            padding: 0.6rem 1.4rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.1s;
+            color: #2c2a26;
+        }
+        .nav-btn.primary {
+            background: #2c2a26;
+            border-color: #2c2a26;
+            color: white;
+        }
+        .result-container {
+            text-align: left;
+            max-width: 90%;
+            margin: 0 auto;
+        }
+        .result-image-wrap {
+            text-align: center;
+            margin: 0 auto 1.25rem;
+        }
+        .result-illustration {
+            max-width: min(100%, 252px);
+            width: 100%;
+            height: auto;
+            border-radius: 1.25rem;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        }
+        .type-name {
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin: 0 0 0.8rem 0;
+            color: #2c2a26;
+            text-align: center;
+        }
+        .type-desc {
+            color: #4a4a46;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin: 1rem 0;
+        }
+        .value-line {
+            font-weight: 600;
+            margin: 0.8rem 0;
+            color: #2c2a26;
+        }
+        .other-line {
+            background: #efede8;
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            margin: 0.8rem 0;
+        }
+        .future-line {
+            margin-top: 1.2rem;
+            padding: 0.8rem;
+            background: #faf9f6;
+            border-radius: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #5a5a55;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            padding: 1rem;
+            color: #a8a59e;
+            border-top: 1px solid #efede8;
+        }
+        @media (max-width: 600px) {
+            .content { padding: 1.5rem; }
+            .type-name { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>文化传播人格测试</h1>
+    </div>
+    <div id="dynamicContent"></div>
+    <footer>几道轻盈的话题 · 照见你未说出的传播人格</footer>
+</div>
+
+<script>
+    // ======================= 题库（9题，单选）========================
+    const QUESTIONS = [
+        { text: "你更愿意通过哪种方式了解中国文化？",
+          options: [
+              { text: "参观博物馆、考古遗址等", role: "根脉守门人", scores: { T:1, P:0, G:0 } },
+              { text: "看传统文化相关的影视作品", role: "灵感掌灯人", scores: { T:0, P:1, G:0 } },
+              { text: "读外国人写的中国文化研究", role: "四海连桥侠", scores: { T:0, P:0, G:1 } },
+              { text: "听朋友或老师讲解", role: "春风讲书匠", scores: { T:0.5, P:0, G:0.5 } }
+          ] },
+        { text: "你认为以下哪种现象最能体现“文化自信”？",
+          options: [
+              { text: "年轻人穿汉服过传统节日", role: "灵感掌灯人", scores: { T:0.5, P:1, G:0 } },
+              { text: "在海外设立中国文化研究中心", role: "幕后摆渡人", scores: { T:0, P:0, G:1 } },
+              { text: "有人在国际场合用外文表达维护中国形象", role: "讯息飞鸽", scores: { T:0, P:0, G:1 } },
+              { text: "坚持原汁原味传承戏曲、书法", role: "根脉守门人", scores: { T:1, P:0, G:0 } }
+          ] },
+        { text: "当外国朋友对中国文化有误解时，你会怎么做？",
+          options: [
+              { text: "找一篇权威文章转发给他", role: "讯息飞鸽", scores: { T:0, P:0.5, G:0.5 } },
+              { text: "耐心解释，用他熟悉的方式打比方", role: "春风讲书匠", scores: { T:0, P:0, G:1 } },
+              { text: "邀请他参加本地文化活动亲身感受", role: "幕后摆渡人", scores: { T:0.5, P:0, G:0.5 } },
+              { text: "觉得没必要，中国人自己懂就行", role: "根脉守门人", scores: { T:1, P:0, G:0 } }
+          ] },
+        { text: "你觉得传统文化“活起来”最有效的方式是？",
+          options: [
+              { text: "用vr等新技术让文物活起来", role: "灵感掌灯人", scores: { T:0, P:1, G:0.5 } },
+              { text: "用写作的方式去讲述新的文化故事", role: "春风讲书匠", scores: { T:0.5, P:1, G:0 } },
+              { text: "让传统文化有更多机会走进课堂", role: "根脉守门人", scores: { T:1, P:0, G:0 } },
+              { text: "以游戏或动漫的形式去传播传统文化", role: "四海连桥侠", scores: { T:0, P:0.5, G:1 } }
+          ] },
+        { text: "面对网络上抹黑中国英雄的言论，你倾向于？",
+          options: [
+              { text: "举报并投诉", role: "根脉守门人", scores: { T:1, P:0, G:0 } },
+              { text: "发布科普视频或图文反驳", role: "灵感掌灯人", scores: { T:0.5, P:1, G:0 } },
+              { text: "转发官方辟谣信息", role: "讯息飞鸽", scores: { T:0.5, P:0, G:0.5 } },
+              { text: "点赞表达正义的帖子，为其增加热度", role: "幕后摆渡人", scores: { T:0.5, P:0.5, G:0 } }
+          ] },
+        { text: "你认为中国文化“出海”最需要突破的是？",
+          options: [
+              { text: "翻译质量与文化语境转换", role: "四海连桥侠", scores: { T:0, P:0, G:1 } },
+              { text: "制作出更多国际水准的影视/游戏产品", role: "灵感掌灯人", scores: { T:0, P:1, G:0.5 } },
+              { text: "培养跨文化传播人才", role: "春风讲书匠", scores: { T:0, P:0, G:0.5 } },
+              { text: "政府加大资金和渠道支持", role: "幕后摆渡人", scores: { T:0, P:0, G:0.5 } }
+          ] },
+        { text: "周末你更可能选择哪种文化休闲？",
+          options: [
+              { text: "去听一场传统戏曲", role: "根脉守门人", scores: { T:1, P:0, G:0 } },
+              { text: "逛国潮市集、买文创", role: "灵感掌灯人", scores: { T:0, P:1, G:0 } },
+              { text: "看一场以中国文化为主题的电影", role: "四海连桥侠", scores: { T:0, P:0, G:1 } },
+              { text: "刷短视频里文化科普内容", role: "讯息飞鸽", scores: { T:0, P:0.5, G:0 } }
+          ] },
+        { text: "你认为社会主义核心价值观中最能引起年轻人共鸣的是？",
+          options: [
+              { text: "富强、民主", role: "幕后摆渡人", scores: { T:0.5, P:0, G:0 } },
+              { text: "自由、平等", role: "四海连桥侠", scores: { T:0, P:0, G:0.5 } },
+              { text: "爱国、敬业", role: "根脉守门人", scores: { T:1, P:0, G:0 } },
+              { text: "友善、和谐", role: "讯息飞鸽", scores: { T:0.5, P:0.5, G:0 } }
+          ] },
+        { text: "如果你要设计一款“中国文化”主题的产品，你会把创意点放在？",
+          options: [
+              { text: "把传统图案用现代极简风格重新设计", role: "灵感掌灯人", scores: { T:0.5, P:1, G:0 } },
+              { text: "忠实复原古代工艺和材料", role: "根脉守门人", scores: { T:1, P:0, G:0 } },
+              { text: "加入国际潮流元素，便于全球销售", role: "四海连桥侠", scores: { T:0, P:0.5, G:1 } },
+              { text: "在包装上讲述历史故事", role: "春风讲书匠", scores: { T:0.5, P:0, G:0.5 } }
+          ] }
+    ];
+
+    // 结果页插画：文件名序号为 1–8（如 images/1.png），置于项目 images/ 目录（支持 .png，失败则尝试 .jpg）
+    const RESULT_IMAGE_BY_NAME = {
+        "老钱守门人": "1",
+        "弄潮小当家": "2",
+        "跨海接线员": "3",
+        "新旧接头人": "4",
+        "古韵外交官": "5",
+        "潮流摆渡使": "6",
+        "三栖文化体": "7",
+        "待机观察者": "8"
+    };
+
+    function getResultImageMarkup(cardName) {
+        const id = RESULT_IMAGE_BY_NAME[cardName] || "8";
+        const alt = cardName + " 人格插画";
+        return `<div class="result-image-wrap">
+            <img class="result-illustration" src="images/${id}.png" alt="${alt}" loading="lazy"
+                onerror="this.onerror=null;this.src='images/${id}.jpg';">
+        </div>`;
+    }
+
+    // 角色显示名称（仅用于计算，不展示在结果页）
+    const roleDisplay = {
+        "灵感掌灯人": "🎨 灵感掌灯人",
+        "幕后摆渡人": "⚙️ 幕后摆渡人",
+        "讯息飞鸽": "📣 讯息飞鸽",
+        "根脉守门人": "🌳 根脉守门人",
+        "春风讲书匠": "📖 春风讲书匠",
+        "四海连桥侠": "🌉 四海连桥侠"
+    };
+
+    // ========== 人格类型判定（只含我们确认的文案） ==========
+    function getPersonalityCard(T, P, G) {
+        const high = (v) => v > 0.62;
+        if (high(T) && !high(P) && !high(G)) {
+            return {
+                name: "老钱守门人",
+                desc: "你对文化延续的稳定性有天然亲近，重视经典文本与正统仪式的完整性。时间的沉淀是一种筛选，留下来的东西值得被郑重对待。你翻阅古籍时的安静，是一种慢节奏的沉浸。你相信文化像老茶，越品越有味道。",
+                value: "你是文化的锚点，确保创新扎根于深厚的土壤。",
+                other: "你可能与根脉守门人、春风讲书匠有相似的底色。",
+                future: "愿你在守护根源的同时，也感受到传承带来的喜悦。你每一次的坚持，都在为未来留下一盏灯。"
+            };
+        }
+        if (!high(T) && high(P) && !high(G)) {
+            return {
+                name: "弄潮小当家",
+                desc: "你对当下文化形态的变迁高度敏感，擅长将传统元素转化为轻量、可传播的社交语言。你像一个文化嗅觉探测器，总能从老物件里找出有趣的切入点。你让文化变得可亲近、可参与。你觉得：被看见，是文化活着的第一步。",
+                value: "你是文化的放大器，让经典以轻盈的姿态进入大众日常。",
+                other: "你可能与灵感掌灯人、讯息飞鸽有相似的能量。",
+                future: "继续保持你的敏锐与热情，让更多人在你的分享里遇见文化的乐趣。你的每一次创造，都是传统与未来的美妙碰撞。"
+            };
+        }
+        if (!high(T) && !high(P) && high(G)) {
+            return {
+                name: "跨海接线员",
+                desc: "你习惯从跨文化比较的角度理解中国，能察觉哪些内容容易产生误读，也擅长在差异中寻找共通点。你的解释带着同频的节奏，把对方拉进同一个语境，慢慢拆开那些缠绕的线头。你知道文化差异往往只是视角不同。你擅长把“我们和他们”变成“我们”。",
+                value: "你是文化的翻译器，减少噪音，增加共鸣。",
+                other: "你可能与四海连桥侠、讯息飞鸽有相似的特质。",
+                future: "愿你的桥梁越搭越宽，让不同语言的人们都能听懂中国故事背后的温度。你的努力正在让世界变得更近。"
+            };
+        }
+        if (high(T) && high(P) && !high(G)) {
+            return {
+                name: "新旧接头人",
+                desc: "你既尊重经典的内在逻辑，也乐于接纳新媒介、新语态。你看到传统和流行是同一条河的上游与下游。你的身上有一种罕见的平衡感：创新时从容，守正时坚定。你让两端的人都能找到对话的起点。",
+                value: "你是文化的转换器，让两端互相滋养。",
+                other: "你可能同时兼具灵感掌灯人与根脉守门人的气质。",
+                future: "继续做那个连接过去与未来的人。你的平衡感会感染更多人，让古老智慧在新时代安然落地。"
+            };
+        }
+        if (high(T) && !high(P) && high(G)) {
+            return {
+                name: "古韵外交官",
+                desc: "你既能沉入传统的内核，又能向外打开对话空间。你擅长把抽象的价值变成可触摸的日常，让对方觉得“这个我可以理解”。你用从容的姿态展示文化，让跨文化沟通变得体面、温柔、有力。",
+                value: "你是文化的优雅输出者，让跨文化沟通显得从容。",
+                other: "你可能与四海连桥侠、春风讲书匠有相似的风范。",
+                future: "愿你继续从容地讲述中国故事，让每一次对话都成为一次温暖的相遇。你的优雅就是文化最好的名片。"
+            };
+        }
+        if (!high(T) && high(P) && high(G)) {
+            return {
+                name: "潮流摆渡使",
+                desc: "你擅长把中国文化的新潮形态推给全球年轻受众。你相信文化出海的船票是一段节奏、一种视觉、一个让人忍不住参与的瞬间。你敏锐地捕捉到：轻快的形式更容易跨越边界。你的开放吸引着别人靠近。",
+                value: "你是文化的流量引桥，让出海自然发生。",
+                other: "你可能与灵感掌灯人、四海连桥侠有相似的活力。",
+                future: "请继续大胆创造那些让人忍不住转发的文化瞬间。你的潮流感正在让世界爱上中国的新模样。"
+            };
+        }
+        if (high(T) && high(P) && high(G)) {
+            return {
+                name: "三栖文化体",
+                desc: "你在传统、流行、国际维度上没有明显短板，能根据语境灵活切换表达方式。你心里有一张完整的文化地图，知道哪条路最近、哪条路最平。你可以在不同场合自在地做自己，那些维度早就长在了你身上。你是文化人格的“完全体”。",
+                value: "你是文化的理想型，成熟且开放。",
+                other: "你往往是灵感掌灯人、四海连桥侠等角色的复合体。",
+                future: "你已经拥有非常完整的文化视野。愿你在任何需要的地方，自在发光，成为连接多种可能的中心。"
+            };
+        }
+        // 待机观察者（修改了 other 文案）
+        return {
+            name: "待机观察者",
+            desc: "你尚未形成固定的文化偏好，对不同形态保持开放。你不急着站队，习惯多看、多听、多问，等自己真正理解再说“我喜欢”。你的节奏偏慢，但每一步都是真实的积累。你是一张白纸，也是无限可能。",
+            value: "你是文化的潜在变量，代表未被激发的可能性。",
+            other: "你现在可能没有明确的喜好清晰，你会有无限可能的未来。",
+            future: "给自己时间慢慢探索，你终会找到最舒服的文化表达方式。你的开放和好奇，正是文化生长最需要的土壤。"
+        };
+    }
+
+    function computeResults(answers) {
+        // 仅用于计算T/P/G（不再展示，但保留逻辑）
+        let roleScores = { "灵感掌灯人":0, "幕后摆渡人":0, "讯息飞鸽":0, "根脉守门人":0, "春风讲书匠":0, "四海连桥侠":0 };
+        let sumT=0, sumP=0, sumG=0;
+        let count = 0;
+        for (let i=0; i<QUESTIONS.length; i++) {
+            const optIdx = answers[i];
+            if (optIdx === undefined || optIdx === null) continue;
+            const opt = QUESTIONS[i].options[optIdx];
+            roleScores[opt.role] += 1;
+            sumT += opt.scores.T || 0;
+            sumP += opt.scores.P || 0;
+            sumG += opt.scores.G || 0;
+            count++;
+        }
+        if (count === 0) return { T:0, P:0, G:0 };
+        return { T: sumT/count, P: sumP/count, G: sumG/count };
+    }
+
+    // 页面状态
+    let currentStep = -1;   // -1入口, 0~8题目, -2结果
+    let userAnswers = new Array(QUESTIONS.length).fill(null);
+    const mainDiv = document.getElementById('dynamicContent');
+
+    function renderEntry() {
+        return `<div class="content entry">
+            <div class="entry-desc">
+                <p>文化像风，看不见，却总在身边打转。</p>
+                <p>你用什么方式接住它、传出去？<br>是随口安利一部作品，还是默默收藏一段记忆？</p>
+                <p>一起看看你是什么样的人吧！</p>
+            </div>
+            <button class="start-btn" id="startTestBtn">开始测试</button>
+        </div>`;
+    }
+
+    function renderQuestion() {
+        const q = QUESTIONS[currentStep];
+        const selected = userAnswers[currentStep];
+        let optsHtml = '';
+        q.options.forEach((opt, idx) => {
+            const letter = String.fromCharCode(65+idx);
+            const checked = (selected === idx) ? 'checked' : '';
+            optsHtml += `<label class="option-item"><input type="radio" name="qOption" value="${idx}" ${checked}> <strong>${letter}.</strong> ${opt.text}</label>`;
+        });
+        const isLast = (currentStep === QUESTIONS.length-1);
+        return `<div class="content">
+            <div class="question-card">
+                <div class="q-title">${currentStep+1}. ${q.text}</div>
+                <div class="options" id="optionsArea">${optsHtml}</div>
+                <div class="nav-buttons">
+                    <button class="nav-btn" id="prevBtn">◀ 上一题</button>
+                    <button class="nav-btn primary" id="nextBtn">${isLast ? '✨ 查看人格 ✨' : '下一题'}</button>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    function renderResult() {
+        const { T, P, G } = computeResults(userAnswers);
+        const card = getPersonalityCard(T, P, G);
+        const heroImg = getResultImageMarkup(card.name);
+        return `<div class="content result-container">
+            ${heroImg}
+            <div class="type-name">${card.name}</div>
+            <div class="type-desc">${card.desc}</div>
+            <div class="value-line">${card.value}</div>
+            <div class="other-line">${card.other}</div>
+            <div class="future-line">✨ 未来我们一起走 ✨<br>${card.future}</div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="start-btn" id="restartBtn">重新测试</button>
+            </div>
+        </div>`;
+    }
+
+    function saveCurrent() {
+        const selected = document.querySelector('input[name="qOption"]:checked');
+        if (selected) userAnswers[currentStep] = parseInt(selected.value);
+    }
+
+    function nextStep() {
+        if (userAnswers[currentStep] === null) return;
+        if (currentStep + 1 < QUESTIONS.length) {
+            currentStep++;
+            renderMain();
+        } else {
+            currentStep = -2;
+            renderMain();
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 0) {
+            saveCurrent();
+            currentStep--;
+            renderMain();
+        } else {
+            currentStep = -1;
+            renderMain();
+        }
+    }
+
+    function renderMain() {
+        if (currentStep === -1) {
+            mainDiv.innerHTML = renderEntry();
+            const startBtn = document.getElementById('startTestBtn');
+            if (startBtn) startBtn.onclick = () => {
+                userAnswers = new Array(QUESTIONS.length).fill(null);
+                currentStep = 0;
+                renderMain();
+            };
+            return;
+        }
+        if (currentStep >= 0 && currentStep < QUESTIONS.length) {
+            mainDiv.innerHTML = renderQuestion();
+            const radios = document.querySelectorAll('input[name="qOption"]');
+            radios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    userAnswers[currentStep] = parseInt(e.target.value);
+                });
+            });
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            if (prevBtn) prevBtn.onclick = prevStep;
+            if (nextBtn) nextBtn.onclick = nextStep;
+            return;
+        }
+        if (currentStep === -2) {
+            mainDiv.innerHTML = renderResult();
+            const restartBtn = document.getElementById('restartBtn');
+            if (restartBtn) restartBtn.onclick = () => {
+                userAnswers = new Array(QUESTIONS.length).fill(null);
+                currentStep = -1;
+                renderMain();
+            };
+        }
+    }
+
+    renderMain();
+</script>
+</body>
+</html>
